@@ -1,9 +1,3 @@
-# HiveWatch Helm Chart Repo
+# gh-pages branch
 
-This repository contains Hivewatch's shared Helm Charts.
-
-## Kubernetes and Helm compatibility
-
-The Helm Charts in this repository support only the most recent stable version of Kubernetes.
-
-Only Helm 3.x is supported.
+This branch is used for hosting the chart index.
