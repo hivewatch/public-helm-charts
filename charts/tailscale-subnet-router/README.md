@@ -38,9 +38,8 @@ Unless overridden, the Chart will assume that you have a Secret named `tailscale
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add gtaylor https://gtaylor.github.io/helm-charts
-$ helm install my-release gtaylor/tailscale-subnet-router \
-    --set image.repository your-repo-here.com/tailscale/tailscale-subnet-proxy \
+$ helm repo add hivewatch https://hivewatch.github.io/public-helm-charts/
+$ helm install hivewatch-polka hivewatch/tailscale-subnet-router
 ```
 
 If all goes well, you should see a new Subnet router in your Tailscale admin page.
