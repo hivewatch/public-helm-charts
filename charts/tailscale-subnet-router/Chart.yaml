@@ -2,8 +2,8 @@ apiVersion: v2
 name: tailscale-subnet-router
 description: Deploy a HiveWatch's Tailscale subnet router on Kubernetes
 type: application
-version: 1.2.1
-appVersion: "v1.34.0"
+version: 1.2.2
+appVersion: "v1.34.1"
 home: https://github.com/hivewatch/helm-charts/charts/tailscale-subnet-router
 sources:
   - https://github.com/hivewatch/helm-charts/charts/tailscale-subnet-router
