@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   tailscale-subnet-router:
   - apiVersion: v2
+    appVersion: v1.34.1
+    created: "2022-12-27T10:09:45.178141034Z"
+    description: Deploy a HiveWatch's Tailscale subnet router on Kubernetes
+    digest: e290c86e9e70c560e95862ed7aeafab8a0de60d721eaf095d278f3b6df20ed8f
+    home: https://github.com/hivewatch/helm-charts/charts/tailscale-subnet-router
+    maintainers:
+    - email: support@hivewatch.com
+      name: Program Integration Hive
+      url: https://hivewatch.com
+    name: tailscale-subnet-router
+    sources:
+    - https://github.com/hivewatch/helm-charts/charts/tailscale-subnet-router
+    type: application
+    urls:
+    - https://github.com/hivewatch/public-helm-charts/releases/download/tailscale-subnet-router-1.2.2/tailscale-subnet-router-1.2.2.tgz
+    version: 1.2.2
+  - apiVersion: v2
     appVersion: v1.34.0
     created: "2022-12-09T15:31:48.821027401Z"
     description: Deploy a HiveWatch's Tailscale subnet router on Kubernetes
@@ -18,4 +35,4 @@ entries:
     urls:
     - https://github.com/hivewatch/public-helm-charts/releases/download/tailscale-subnet-router-1.2.1/tailscale-subnet-router-1.2.1.tgz
     version: 1.2.1
-generated: "2022-12-09T15:31:48.821032601Z"
+generated: "2022-12-27T10:09:45.178150234Z"
