@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "clamav_mirror.fullname" . }}
+  labels:
+    {{- include "clamav_mirror.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.api.type }}
+  ports:
+    - name: clamav_mirror-api
+      port: {{ .Values.service.api.port }}
+      protocol: TCP
+  selector:
+    {{- include "clamav_mirror.selectorLabels" . | nindent 4 }}
