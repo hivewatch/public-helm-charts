@@ -19,13 +19,13 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.clamavMirror.metricsPort | quote }}
     spec:
+      serviceAccountName: {{ .Values.clamavMirror.serviceAccountName }}
       securityContext:
         fsGroup: 1000
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.clamavMirror.image }}:{{ default .Chart.AppVersion .Values.clamavMirror.version }}"
         imagePullPolicy: {{ .Values.clamavMirror.pullPolicy }}
-        serviceAccountName: {{ .Values.clamavMirror.serviceAccountName }}
         resources: {{ toYaml .Values.clamavMirror.resources | nindent 10 }}
         ports:
         - name: http
