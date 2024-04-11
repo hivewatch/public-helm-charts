@@ -1,5 +1,0 @@
-Thank you for installing {{ .Chart.Name }}.
-
-Installed Chart version: {{ .Chart.Version }}
-
-  - DatabaseMirror "{{ .Values.clamav_mirror.origin.protocol }}://{{ .Values.clamav_mirror.origin.hostname }}:{{ .Values.clamav_mirror.origin.port }}"

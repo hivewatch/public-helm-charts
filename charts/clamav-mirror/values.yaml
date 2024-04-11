@@ -2,89 +2,47 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+# nameOverride -- override the name of the clamav chart
+nameOverride: ""
 
-image:
-  repository: 151732681343.dkr.ecr.us-west-2.amazonaws.com/clamav-mirror
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+# fullnameOverride -- override the full name of the clamav chart
+fullnameOverride: ""
 
-imagePullSecrets: []
-nameOverride: "clamav-mirror"
-fullnameOverride: "clamav-mirror"
+service:
+  # service.port -- The port to be used by the clamav service
+  port: 443
 
-serviceAccount:
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: "clamav-mirror-sa"
-
-podSecurityContext:
-  {}
-  # fsGroup: 2000
-
-securityContext:
-  {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-deployment:
-  volumes:
-    mountCustomPvc: true
-    name: "clamav-mirror-storage"
-    persistentVolumeClaim: "clamav-mirror-pvc"
-    mountPath: "/data"
-
-configMap:
-  name: "clamav-mirror-config"
-
-clamav_mirror:
+clamavMirror:
+  replicaCount: 1
+  # clamavMirror.image -- The clamav-mirror docker image
+  image: 151732681343.dkr.ecr.us-west-2.amazonaws.com/clamav-mirror
+  #  clamavMirror.version -- The clamav-mirror docker image version - defaults to .Chart.appVersion
+  version: "b232b5cd206fe294c37267471e7142c2096147df"
+  serviceAccountName: "service-account-name"
+  # clamavMirror.resources -- The resource requests and limits for the clamav-mirror service
+  resources:
+    requests:
+      cpu: 400m
+      memory: 1000M
+    limits:
+      cpu: 800m
+      memory: 2000M
+  cvdUpdate:
+    # clamavmirror.cvdUpdate.cvdCron -- DNS based check to update the local database, only new files are downloaded
+    cvdCron: "*/10 * * * *"
+    # clamavmirror.cvdUpdate.MirrorCron -- Frequency to rsync changes to mirror - defaults to every hour
+    mirrorCron: "0 * * * *"
+  metricsPort: 9090
+  volume:
+    name: persistent-volume-name
+    pvcName: persistent-volume-claim-name
+    mounthPath: "/home/clam"
   origin:
     hostname: "127.0.0.1"
     port: 80
-    protocol: "http"
-
-service:
-  api:
-    type: ClusterIP
-    port: 8080
 
 ingress:
   enabled: true
   className: ""
   annotations: {}
   pathType: Prefix
-  tls:
-    secretName: "clamav-mirror-cert-secret"
-
-resources:
-  {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 1
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-podAnnotations: {}
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}

@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Values.configMap.name | quote }}
-data:
-  ORIGIN__PROTOCOL: {{ .Values.clamav_mirror.origin.protocol | quote }}
-  ORIGIN__HOSTNAME: {{ required "A valid hostname, where ClamAV CVD mirror will be reachable is required." .Values.clamav_mirror.origin.hostname | quote }}
-  ORIGIN__PORT: {{ .Values.clamav_mirror.origin.port | quote }}
