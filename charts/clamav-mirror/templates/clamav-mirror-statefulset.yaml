@@ -60,7 +60,7 @@ spec:
           mountPath: /clam/lighttpdmirror.conf
           subPath: lighttpdmirror.conf
         - name: {{ .Values.clamavMirror.volume.name }}
-          mounthPath: {{ .Values.clamavMirror.volume.mounthPath | quote }}
+          mountPath: {{ .Values.clamavMirror.volume.mountPath | quote }}
       volumes:
       - name: config-volume
         configMap:

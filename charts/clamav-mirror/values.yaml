@@ -36,7 +36,7 @@ clamavMirror:
   volume:
     name: persistent-volume-name
     pvcName: persistent-volume-claim-name
-    mounthPath: "/home/clam"
+    mountPath: "/home/clam"
   origin:
     hostname: "127.0.0.1"
     port: 80
