@@ -15,7 +15,7 @@ spec:
       labels:
         name: {{ include "clamav.fullname" . }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/clamav-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/clamav-mirror-configmap.yaml") . | sha256sum }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.clamavMirror.metricsPort | quote }}
     spec:
