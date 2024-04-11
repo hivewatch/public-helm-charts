@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   clamav-mirror:
   - apiVersion: v2
+    appVersion: latest
+    created: "2024-04-11T17:57:08.718347592Z"
+    description: A Helm chart for deploying a clamav-mirror service on kubernetes
+    digest: 51c63dc279b667ab1c3d76fab59e226fa6d3306d04117de64be660be9559080b
+    name: clamav-mirror
+    type: application
+    urls:
+    - https://github.com/hivewatch/public-helm-charts/releases/download/clamav-mirror-1.1.0/clamav-mirror-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2024-04-11T12:07:04.26635263Z"
     description: Helm chart for ClamAV Virus Database mirror
@@ -177,4 +187,4 @@ entries:
     urls:
     - https://github.com/hivewatch/public-helm-charts/releases/download/tailscale-subnet-router-1.2.1/tailscale-subnet-router-1.2.1.tgz
     version: 1.2.1
-generated: "2024-04-11T12:07:04.266391863Z"
+generated: "2024-04-11T17:57:08.718406782Z"
