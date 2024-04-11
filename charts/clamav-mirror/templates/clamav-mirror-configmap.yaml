@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "clamav.fullname" . }}-mirror-config
+  name: {{ include "clamav.fullname" . }}-config
 data:
   cvdmirror.crontab: |
     #Keep local definitions up to date 

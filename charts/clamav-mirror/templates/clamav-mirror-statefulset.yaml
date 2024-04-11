@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "clamav.fullname" . }}-mirror
+  name: {{ include "clamav.fullname" . }}
   labels:
     {{- include "clamav.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.clamavMirror.replicaCount }}
   selector:
     matchLabels:
-      name: {{ include "clamav.fullname" . }}-mirror
-  serviceName: {{ include "clamav.fullname" . }}-mirror
+      name: {{ include "clamav.fullname" . }}
+  serviceName: {{ include "clamav.fullname" . }}
   template:
     metadata:
       labels:
-        name: {{ include "clamav.fullname" . }}-mirror
+        name: {{ include "clamav.fullname" . }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/clamav-mirror-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/clamav-configmap.yaml") . | sha256sum }}
         prometheus.io/scrape: "true"
         prometheus.io/port: {{ .Values.clamavMirror.metricsPort | quote }}
     spec:
@@ -28,7 +28,7 @@ spec:
         imagePullPolicy: {{ .Values.clamavMirror.pullPolicy }}
         resources: {{ toYaml .Values.clamavMirror.resources | nindent 10 }}
         ports:
-        - name: http
+        - name: {{ include "clamav.fullname" . }}
           containerPort: 8080
           protocol: TCP
         livenessProbe:
@@ -64,7 +64,7 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: {{ include "clamav.fullname" . }}-mirror-config
+          name: {{ include "clamav.fullname" . }}-config
       - name: {{ .Values.clamavMirror.volume.name }}
         persistentVolumeClaim:
           claimName: {{ .Values.clamavMirror.volume.pvcName }}
