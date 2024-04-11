@@ -7,7 +7,7 @@ metadata:
 spec:
   type: {{ .Values.service.api.type }}
   ports:
-    - name: clamav-mirror-api
+    - name: clamav-cvd-api
       port: {{ .Values.service.api.port }}
       protocol: TCP
   selector:
