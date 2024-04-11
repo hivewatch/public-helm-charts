@@ -28,7 +28,7 @@ spec:
         imagePullPolicy: {{ .Values.clamavMirror.pullPolicy }}
         resources: {{ toYaml .Values.clamavMirror.resources | nindent 10 }}
         ports:
-        - name: {{ include "clamav.fullname" . }}
+        - name: {{ include "clamav.fullname" . }}-api
           containerPort: 8080
           protocol: TCP
         livenessProbe:
@@ -37,11 +37,11 @@ spec:
           failureThreshold: 3
           httpGet:
             path: /
-            port: http
+            port: {{ include "clamav.fullname" . }}-api
         readinessProbe:
           httpGet:
             path: /bytecode.cvd
-            port: http
+            port: {{ include "clamav.fullname" . }}-api
           initialDelaySeconds: 20
           timeoutSeconds: 10
           periodSeconds: 15
