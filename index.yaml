@@ -3,6 +3,17 @@ entries:
   clamav:
   - apiVersion: v2
     appVersion: 1.3.0
+    created: "2024-04-12T15:10:33.024919444Z"
+    description: An Open-Source antivirus engine for detecting trojans, viruses, malware
+      & other malicious threats. Using Mailu docker image.
+    digest: 268998d797ad44261d99783503d3aadd44de9c40c9ca51134c5b821365bbd8d4
+    name: clamav
+    type: application
+    urls:
+    - https://github.com/hivewatch/public-helm-charts/releases/download/clamav-3.0.2/clamav-3.0.2.tgz
+    version: 3.0.2
+  - apiVersion: v2
+    appVersion: 1.3.0
     created: "2024-04-12T12:44:27.526227537Z"
     description: An Open-Source antivirus engine for detecting trojans, viruses, malware
       & other malicious threats. Using Mailu docker image.
@@ -209,4 +220,4 @@ entries:
     urls:
     - https://github.com/hivewatch/public-helm-charts/releases/download/tailscale-subnet-router-1.2.1/tailscale-subnet-router-1.2.1.tgz
     version: 1.2.1
-generated: "2024-04-12T12:44:27.526262001Z"
+generated: "2024-04-12T15:10:33.024958627Z"
