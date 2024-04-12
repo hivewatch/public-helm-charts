@@ -18,6 +18,7 @@ clamavMirror:
   image: 151732681343.dkr.ecr.us-west-2.amazonaws.com/clamav-mirror
   #  clamavMirror.version -- The clamav-mirror docker image version - defaults to .Chart.appVersion
   version: "b232b5cd206fe294c37267471e7142c2096147df"
+  pullPolicy: Always
   serviceAccountName: "service-account-name"
   # clamavMirror.resources -- The resource requests and limits for the clamav-mirror service
   resources:
