@@ -50,9 +50,10 @@ spec:
           ports:
           - containerPort: {{ .Values.tailscale.httpProxy.port }}
             name: tailscale
+          args: ["--accept-routes"]
           env:
-          - name: TS_EXTRA_ARGS
-            value: "--accept-routes --reset"
+          # - name: TS_EXTRA_ARGS
+          #   value: "--accept-routes"
           - name: TS_OUTBOUND_HTTP_PROXY_LISTEN
             value: "0.0.0.0:{{ .Values.tailscale.httpProxy.port }}"
           - name: KUBERNETES_SERVICE_HOST
