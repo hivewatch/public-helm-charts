@@ -51,8 +51,6 @@ spec:
           - containerPort: {{ .Values.tailscale.httpProxy.port }}
             name: tailscale
           env:
-          - name: TS_ACCEPT_DNS
-            value: "true"
           - name: TS_EXTRA_ARGS
             value: "--accept-routes --reset"
           - name: TS_OUTBOUND_HTTP_PROXY_LISTEN
