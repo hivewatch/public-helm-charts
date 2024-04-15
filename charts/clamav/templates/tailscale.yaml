@@ -14,9 +14,9 @@ spec:
     ports:
     - containerPort: {{ .Values.tailscale.httpProxy.port }}
       name: tailscale
-    env:
+    env:    
     - name: TS_OUTBOUND_HTTP_PROXY_LISTEN
-      value: "0.0.0.0:"{{ .Values.tailscale.httpProxy.port }}
+      value: "0.0.0.0:{{ .Values.tailscale.httpProxy.port }}"
     - name: KUBERNETES_SERVICE_HOST
       value: ""
       # Store the state in a k8s secret
