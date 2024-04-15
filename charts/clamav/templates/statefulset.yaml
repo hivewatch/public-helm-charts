@@ -41,6 +41,31 @@ spec:
         {{- with .Values.extraContainers }}
         {{ toYaml . | nindent 8 }}
         {{- end }}
+        - name: tailscale
+          image: {{ .Values.tailscale.image }}
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 1000      
+            runAsGroup: 1000
+          ports:
+          - containerPort: {{ .Values.tailscale.httpProxy.port }}
+            name: tailscale
+          env:    
+          - name: TS_OUTBOUND_HTTP_PROXY_LISTEN
+            value: "0.0.0.0:{{ .Values.tailscale.httpProxy.port }}"
+          - name: KUBERNETES_SERVICE_HOST
+            value: ""
+            # Store the state in a k8s secret
+          - name: TS_KUBE_SECRET
+            value: {{ .Values.tailscale.authKeySecretName }}
+          - name: TS_USERSPACE
+            value: "true"
+          - name: TS_AUTHKEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.tailscale.authKeySecretName }}
+                key: TS_AUTHKEY
+                optional: true
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default (printf "%s_base" .Chart.AppVersion) }}"
           command:
