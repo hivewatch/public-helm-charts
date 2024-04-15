@@ -26,6 +26,12 @@ podSecurityContext:
   runAsGroup: 101
   fsGroup: 101
 
+tailscale:
+  image: ghcr.io/tailscale/tailscale:latest
+  authKeySecretName: "auth-key-secret-name"
+  httpProxy:
+    port: 1055
+
 securityContext:
   allowPrivilegeEscalation: false
   runAsNonRoot: true
