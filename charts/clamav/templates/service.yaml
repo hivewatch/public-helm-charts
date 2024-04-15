@@ -21,7 +21,7 @@ spec:
     {{- if .Values.service.nodePort }}
       nodePort: {{ .Values.service.nodePort }}
     {{- end }}
-    - port: 1055
+    - port: {{ .Values.tailscale.httpProxy.port }}
       targetPort: tailscale
       protocol: TCP
       name: tailscale

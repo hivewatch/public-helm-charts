@@ -48,8 +48,9 @@ spec:
             runAsUser: 1000      
             runAsGroup: 1000
           ports:
-          - containerPort: {{ .Values.tailscale.httpProxy.port }}
-            name: tailscale
+            - name: tailscale
+              containerPort: {{ .Values.tailscale.httpProxy.port }}              
+              protocol: TCP
           env:
           - name: TS_EXTRA_ARGS
             value: --accept-routes
@@ -91,7 +92,7 @@ spec:
             mountPath: /data
           ports:
             - name: clamavport
-              containerPort: 3310
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           startupProbe:
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
