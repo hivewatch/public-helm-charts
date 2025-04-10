@@ -3,7 +3,7 @@
 ##  An Open-Source antivirus engine for detecting trojans, viruses, malware & other malicious threats.
 
 [ClamAV](https://www.clamav.net/) is the open source standard for mail gateway scanning software.
- Developed by [Cisco Talos](https://github.com/Cisco-Talos/clamav-devel). This Helm Chart uses the [MailU](https://github.com/Mailu/Mailu) Docker image. `appVersion` shows the Mailu/clamav container image version.
+ Developed by [Cisco Talos](https://github.com/Cisco-Talos/clamav-devel). This Helm Chart uses the [official ClamAV Docker image](https://hub.docker.com/r/clamav/clamav). `appVersion` shows the container image version.
 
 ## QuickStart
 
@@ -47,6 +47,8 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The configurable parameters of the ClamAV chart and
 their descriptions can be seen in `values.yaml`. The [full documentation](https://www.clamav.net/documents/clam-antivirus-0-101-0-user-manual) contains more information about running ClamAV in docker.
+
+The config files themselves can either be specified as a plain text value or composed from a dict. In case they are specified via dict, if you give one key a list as a value, the option will be repeated for each value in the list.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 

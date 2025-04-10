@@ -20,6 +20,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+kind: StatefulSet
+updateStrategy: null
+
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 100
@@ -52,6 +55,10 @@ service:
   # nodePort: 30100
   annotations: {}
 
+extraEnvVars: {}
+extraEnvVarsCM: ""
+extraEnvVarsSecret: ""
+
 ingress:
   enabled: false
   # ingressClassName: ""
@@ -67,89 +74,81 @@ ingress:
   #      - chart-example.local
 
 ## Ref: https://linux.die.net/man/5/clamd.conf
-## Note: will completely override default clamd.conf file at https://github.com/Mailu/Mailu/tree/master/optional/clamav/conf
-clamdConfig: |
+## Note: will completely override default clamd.conf file at https://github.com/Cisco-Talos/clamav/blob/main/etc/clamd.conf.sample
+clamdConfigDict:
   ###############
   # General
   ###############
-
-  DatabaseDirectory /data
-  TemporaryDirectory /tmp
-  LogTime yes
+  DatabaseDirectory: /data
+  TemporaryDirectory: /tmp
+  LogTime: "yes"
   # CUSTOM: Use pid file in tmp
-  PidFile /tmp/clamd.pid
-  LocalSocket /tmp/clamd.sock
-  TCPSocket 3310
-  Foreground yes
+  PidFile: /tmp/clamd.pid
+  LocalSocket: /tmp/clamd.sock
+  TCPSocket: 3310
+  Foreground: "yes"
 
   ###############
   # Results
   ###############
-
-  DetectPUA yes
-  ExcludePUA NetTool
-  ExcludePUA PWTool
-  HeuristicAlerts yes
-  Bytecode yes
-
-  ###############
-  # Scan
-  ###############
-
-  ScanPE yes
-  DisableCertCheck yes
-  ScanELF yes
-  AlertBrokenExecutables yes
-  ScanOLE2 yes
-  ScanPDF yes
-  ScanSWF yes
-  ScanMail yes
-  PhishingSignatures yes
-  PhishingScanURLs yes
-  ScanHTML yes
-  ScanArchive yes
+  DetectPUA: "yes"
+  ExcludePUA:
+    - NetTool
+    - PWTool
+  HeuristicAlerts: "yes"
+  Bytecode: "yes"
 
   ###############
   # Scan
   ###############
+  ScanPE: "yes"
+  DisableCertCheck: "yes"
+  ScanELF: "yes"
+  AlertBrokenExecutables: "yes"
+  ScanOLE2: "yes"
+  ScanPDF: "yes"
+  ScanSWF: "yes"
+  ScanMail: "yes"
+  PhishingSignatures: "yes"
+  PhishingScanURLs: "yes"
+  ScanHTML: "yes"
+  ScanArchive: "yes"
 
-  MaxScanSize 150M
-  MaxFileSize 30M
-  MaxRecursion 10
-  MaxFiles 15000
-  MaxEmbeddedPE 10M
-  MaxHTMLNormalize 10M
-  MaxHTMLNoTags 2M
-  MaxScriptNormalize 5M
-  MaxZipTypeRcg 1M
-  MaxPartitions 128
-  MaxIconsPE 200
-  PCREMatchLimit 10000
-  PCRERecMatchLimit 10000
+  MaxScanSize: 150M
+  MaxFileSize: 30M
+  MaxRecursion: 10
+  MaxFiles: 15000
+  MaxEmbeddedPE: 10M
+  MaxHTMLNormalize: 10M
+  MaxHTMLNoTags: 2M
+  MaxScriptNormalize: 5M
+  MaxZipTypeRcg: 1M
+  MaxPartitions: 128
+  MaxIconsPE: 200
+  PCREMatchLimit: 10000
+  PCRERecMatchLimit: 10000
 
 ## Ref: https://linux.die.net/man/5/freshclam.conf
-## Note: will completely override default clamd.conf file at https://github.com/Mailu/Mailu/tree/master/optional/clamav/conf
-freshclamConfig: |
+## Note: will completely override default clamd.conf file at https://github.com/Cisco-Talos/clamav/blob/main/etc/freshclam.conf.sample
+freshclamConfigDict:
   ###############
   # General
   ###############
-
-  DatabaseDirectory /data
-  UpdateLogFile /dev/stdout
-  LogTime yes
+  DatabaseDirectory: /data
+  LogTime: "yes"
   # CUSTOM: Use pid file in tmp
-  PidFile /tmp/freshclam.pid
+  PidFile: /tmp/freshclam.pid
   # CUSTOM: Set defined user
-  DatabaseOwner 2000
+  DatabaseOwner: "2000"
 
   ###############
   # Updates
   ###############
 
-  DatabaseMirror database.clamav.net
-  ScriptedUpdates yes
-  NotifyClamd /etc/clamav/clamd.conf
-  Bytecode yes
+  DatabaseMirror: database.clamav.net
+  ScriptedUpdates: "yes"
+  NotifyClamd: /etc/clamav/clamd.conf
+  Bytecode: "yes"
 
 # Use freshclamConfig to define the content of /etc/clamav/freshclam.conf. Example:
 # freshclamConfig: |
@@ -166,8 +165,7 @@ freshclamConfig: |
 #   SafeBrowsing yes
 #   Bytecode yes
 
-resources:
-  {}
+resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following

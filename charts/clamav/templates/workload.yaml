@@ -1,0 +1,213 @@
+{{- if not (has .Values.kind (list "StatefulSet" "Deployment")) -}}
+{{- fail "Invalid value for .Values.kind, only StatefulSet and Deployment are supported" -}}
+{{- end -}}
+{{- if and .Values.persistentVolume.enabled (ne .Values.kind "StatefulSet")  -}}
+{{- fail "If .Values.persistentVolume.enabled is set to true, then .Values.kind has to be set to \"StatefulSet\"" -}}
+{{- end -}}
+apiVersion: apps/v1
+kind: {{ .Values.kind }}
+metadata:
+  name: {{ include "clamav.fullname" . }}
+  labels:
+    {{- include "clamav.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.hpa.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  {{- if eq .Values.kind "StatefulSet" }}
+  serviceName: {{ include "clamav.fullname" . }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "clamav.selectorLabels" . | nindent 6 }}
+  {{- with .Values.updateStrategy }}
+  {{- if eq $.Values.kind "StatefulSet" }}
+  updateStrategy:
+  {{- else }}
+  strategy:
+  {{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.podAnnotations }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "clamav.selectorLabels" . | nindent 8 }}
+        {{- if .Values.podLabels }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "clamav.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.initContainers }}
+      initContainers:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        {{- with .Values.extraContainers }}
+        {{ toYaml . | nindent 8 }}
+        {{- end }}
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default (printf "%s_base" .Chart.AppVersion) }}
+          command:
+            - {{ include "clamav.entrypoint" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.extraEnvVars }}
+          env:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          envFrom:
+            {{- with .Values.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- with .Values.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          volumeMounts:
+            - name: clamav-data
+              mountPath: /data
+            {{- if or .Values.freshclamConfig .Values.freshclamConfigDict }}
+            - name: freshclam-config-volume
+              mountPath: /etc/clamav/freshclam.conf
+              subPath: freshclam.conf
+            {{- end }}
+            {{- if or .Values.clamdConfig .Values.clamdConfigDict }}
+            - name: clamd-config-volume
+              mountPath: /etc/clamav/clamd.conf
+              subPath: clamd.conf
+            {{- end }}
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: tcp-clamav
+              containerPort: 3310
+              protocol: TCP
+          startupProbe:
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            tcpSocket:
+              port: tcp-clamav
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            tcpSocket:
+              port: tcp-clamav
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            tcpSocket:
+              port: tcp-clamav
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: tailscale
+          image: {{ .Values.tailscale.image }}
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 1000      
+            runAsGroup: 1000
+          ports:
+            - name: tailscale
+              containerPort: {{ .Values.tailscale.httpProxy.port }}              
+              protocol: TCP
+          env:
+          - name: TS_EXTRA_ARGS
+            value: --accept-routes
+          - name: TS_OUTBOUND_HTTP_PROXY_LISTEN
+            value: 0.0.0.0:{{ .Values.tailscale.httpProxy.port }}
+          - name: KUBERNETES_SERVICE_HOST
+            value: ""
+            # Store the state in a k8s secret
+          - name: TS_KUBE_SECRET
+            value: {{ .Values.tailscale.authKeySecretName }}
+          - name: TS_AUTHKEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.tailscale.authKeySecretName }}
+                key: TS_AUTHKEY
+                optional: true
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default (printf "%s_base" .Chart.AppVersion) }}
+          command:
+            - {{ include "clamav.entrypoint" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.extraEnvVars }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        {{- if not .Values.persistentVolume.enabled }}
+        - name: clamav-data
+          emptyDir: {}
+        {{- end }}
+        {{- if or .Values.freshclamConfig .Values.freshclamConfigDict }}
+        - name: freshclam-config-volume
+          configMap:
+            name: {{ include "clamav.fullname" . }}-freshclam
+        {{- end }}
+        {{- if or .Values.clamdConfig .Values.clamdConfigDict }}
+        - name: clamd-config-volume
+          configMap:
+            name: {{ include "clamav.fullname" . }}-clamd
+        {{- end }}
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
+  {{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: clamav-data
+        labels:
+          app.kubernetes.io/name: {{ include "clamav.name" . }}
+          app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- with .Values.persistentVolume.annotations }}
+        annotations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      spec:
+        accessModes:
+          {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+          {{- end }}
+        {{- if .Values.persistentVolume.storageClass }}
+        {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: {{ .Values.persistentVolume.storageClass | quote }}
+        {{- end }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+  {{- end }}

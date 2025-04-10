@@ -4,7 +4,7 @@ metadata:
   name: {{ include "clamav.fullname" . }}
 {{- with .Values.service.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+    {{- toYaml . | nindent 4 }}
 {{- end }}
   labels:
     app.kubernetes.io/name: {{ include "clamav.name" . }}
@@ -15,11 +15,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: clamavport
+      targetPort: tcp-clamav
       protocol: TCP
-      name: clamavport
-    {{- if .Values.service.nodePort }}
-      nodePort: {{ .Values.service.nodePort }}
+      name: tcp-clamav
+      {{- with .Values.service.nodePort }}
+      nodePort: {{ . }}
     {{- end }}
     - port: {{ .Values.tailscale.httpProxy.port }}
       targetPort: tailscale
