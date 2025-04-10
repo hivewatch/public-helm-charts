@@ -148,12 +148,6 @@ spec:
                 name: {{ .Values.tailscale.authKeySecretName }}
                 key: TS_AUTHKEY
                 optional: true
-        - name: {{ .Chart.Name }}
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag | default (printf "%s_base" .Chart.AppVersion) }}
-          command:
-            - {{ include "clamav.entrypoint" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.extraEnvVars }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
