@@ -288,6 +288,16 @@ entries:
     version: 1.0.0
   kellnr:
   - apiVersion: v2
+    appVersion: 5.4.1
+    created: "2025-04-11T09:55:09.662601207Z"
+    description: Helm chart for Kellnr, the free Rust Crate registry
+    digest: 78e6d6483fbfbdbfee1ebc3d43adadefb3582be36b7897a74aada84ac59569ae
+    name: kellnr
+    type: application
+    urls:
+    - https://github.com/hivewatch/public-helm-charts/releases/download/kellnr-3.4.1/kellnr-3.4.1.tgz
+    version: 3.4.1
+  - apiVersion: v2
     appVersion: 5.2.6
     created: "2024-12-04T21:13:36.276137071Z"
     description: Helm chart for Kellnr, the free Rust Crate registry
@@ -422,4 +432,4 @@ entries:
     urls:
     - https://github.com/hivewatch/public-helm-charts/releases/download/tailscale-subnet-router-1.2.1/tailscale-subnet-router-1.2.1.tgz
     version: 1.2.1
-generated: "2025-04-10T13:42:52.027843445Z"
+generated: "2025-04-11T09:55:09.662712725Z"
