@@ -8,6 +8,13 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+    {{- if eq .Values.strategy.type "RollingUpdate" }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
+    {{- end}}
   selector:
     matchLabels:
       {{- include "kellnr.selectorLabels" . | nindent 6 }}
@@ -33,7 +40,11 @@ spec:
           configMap:
             name: {{ .Values.importCert.configMapName | quote }}
         {{- end }}
-     
+        - name: certs
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+      {{- end }}
         {{- if .Values.dns.enabled }}
       dnsPolicy: {{ .Values.dns.dnsPolicy | quote }}
       dnsConfig:
@@ -61,6 +72,11 @@ spec:
           - name: RUST_BACKTRACE
             value: "1"
           {{- end }}
+          {{- if .Values.kellnr.postgres.enabled }}
+          - name: KELLNR_POSTGRESQL__PWD
+            valueFrom:
+              secretKeyRef: {{ toYaml .Values.kellnr.postgres.pwdSecretRef | nindent 16 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Values.configMap.name | quote }}
@@ -74,12 +90,18 @@ spec:
             {{- if or .Values.pvc.enabled .Values.deployment.volumes.mountCustomPvc }}
             - mountPath: {{ .Values.kellnr.registry.dataDir | quote }}
               name: {{ .Values.deployment.volumes.name }}
+              readOnly: false
             {{- end }}
             {{- if .Values.importCert.enabled }}
             - name: {{ .Values.importCert.volumeName }}
-              mountPath: "{{ .Values.kellnr.registry.dataDir }}/cert"
+              mountPath: "/usr/local/share/ca-certificates/"
               readOnly: true
             {{- end }}
+            - mountPath: /etc/ssl/certs
+              name: certs
+            - mountPath: /tmp
+              name: tmp
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
