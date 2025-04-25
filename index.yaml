@@ -3,6 +3,26 @@ entries:
   clamav:
   - apiVersion: v2
     appVersion: 1.4.2
+    created: "2025-04-25T14:49:04.325131548Z"
+    description: An Open-Source antivirus engine for detecting trojans, viruses, malware
+      & other malicious threats. Using official docker image.
+    digest: 755e62282849d11e61a79c19b796340938c67f1dbf9e173fa4068685940e7eab
+    home: https://www.clamav.net
+    icon: https://www.clamav.net/assets/clamav-trademark.png
+    maintainers:
+    - name: Wiremind
+      url: https://github.com/wiremind/wiremind-helm-charts
+    name: clamav
+    sources:
+    - https://github.com/wiremind/wiremind-helm-charts/tree/main/charts/clamav
+    - https://hub.docker.com/r/clamav/clamav
+    - https://github.com/Cisco-Talos/clamav-docker
+    - https://github.com/Cisco-Talos/clamav
+    urls:
+    - https://github.com/hivewatch/public-helm-charts/releases/download/clamav-3.5.3/clamav-3.5.3.tgz
+    version: 3.5.3
+  - apiVersion: v2
+    appVersion: 1.4.2
     created: "2025-04-10T13:42:52.027664702Z"
     description: An Open-Source antivirus engine for detecting trojans, viruses, malware
       & other malicious threats. Using official docker image.
@@ -432,4 +452,4 @@ entries:
     urls:
     - https://github.com/hivewatch/public-helm-charts/releases/download/tailscale-subnet-router-1.2.1/tailscale-subnet-router-1.2.1.tgz
     version: 1.2.1
-generated: "2025-04-11T09:55:09.662712725Z"
+generated: "2025-04-25T14:49:04.481544804Z"
