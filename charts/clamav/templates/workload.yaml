@@ -132,6 +132,12 @@ spec:
             - name: tailscale
               containerPort: {{ .Values.tailscale.httpProxy.port }}              
               protocol: TCP
+          resources:
+            limits:
+              memory: 128Mi
+            requests:
+              memory: 128Mi
+              cpu: 100m
           env:
           - name: TS_EXTRA_ARGS
             value: --accept-routes
